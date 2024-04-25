@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://horizontes.c5w4osi0sl7q.us-east-2.rds.amazonaws.com:5432/aluno # URL de conexão com o banco de dados PostgreSQL
     username: postgres # Nome de usuário do banco de dados
-    password:   # Senha do banco de dados
+    password: tRD5jASTYt4Wq7  # Senha do banco de dados
     driver-class-name: org.postgresql.Driver # Driver JDBC para PostgreSQL
   flyway:
     baseline-on-migrate: true
