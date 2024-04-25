@@ -1,0 +1,189 @@
+version: '3.8'
+name: store
+services:
+  db-store:
+    container_name: store-db-store
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=store
+      - POSTGRES_PASSWORD=store
+      - POSTGRES_DB=store
+    volumes:
+      - $VOLUME/postgres/store/data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - private-network
+
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: store-prometheus
+  #   ports:
+  #     - 9090:9090
+  #   volumes:
+  #     - $VOLUME/prometheus:/etc/prometheus
+  #     - $VOLUME/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - private-network
+
+  # grafana:
+  #   container_name: store-grafana
+  #   image: grafana/grafana-enterprise
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   volumes:
+  #     - $VOLUME/grafana:/var/lib/grafana
+  #     - $VOLUME/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources      
+  #   restart: always
+  #   networks:
+  #     - private-network
+
+
+  # adminer:
+  #   container_name: store-adminer
+  #   image: adminer:latest
+  #   ports:
+  #     - 8089:8080
+  #   networks:
+  #     - private-network
+
+  # discovery:
+  #   build:
+  #     context: ../discovery/
+  #     dockerfile: Dockerfile
+  #   container_name: store-discovery
+  #   image: store-discovery:latest
+  #   ports:
+  #     - 8761:8761
+  #   restart: always
+  #   networks:
+  #     - private-network
+
+  # gateway:
+  #   build:
+  #     context: ../gateway/
+  #     dockerfile: Dockerfile
+  #   container_name: store-gateway
+  #   image: store-gateway:latest
+  #   ports:
+  #     - 8080:8080
+  #   environment:
+  #     - eureka.client.service-url.defaultZone=http://store-discovery:8761/eureka/
+  #   networks:
+  #     - private-network
+  #   depends_on:
+  #     - discovery
+
+  # account:
+  #   build:
+  #     context: ../account-resource/
+  #     dockerfile: Dockerfile
+  #   image: store-account:latest
+  #   environment:
+  #     - spring.datasource.url=jdbc:postgresql://store-db-store:5432/store
+  #     - spring.datasource.username=admin
+  #     - spring.datasource.password=tRD5jASTYt4Wq7
+  #     - eureka.client.service-url.defaultZone=http://store-discovery:8761/eureka/
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+  #   restart: always
+  #   networks:
+  #     - private-network
+  #   depends_on:
+  #     - db-store
+  #     - discovery
+
+  aluno:
+    build:
+      context: ../aluno-resource/
+      dockerfile: Dockerfile
+    image: store-aluno:latest
+    environment:
+      - spring.datasource.url=jdbc:postgresql://db-store:5432/store
+      - spring.datasource.username=store
+      - spring.datasource.password=store
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "8080:8080"
+    networks:
+      - private-network
+    depends_on:
+      - db-store
+
+
+
+      # - discovery
+      # - account
+
+#   instituicao:
+#     build:
+#       context: ../instituicao-resource/
+#       dockerfile: Dockerfile
+#     image: store-instituicao:latest
+#     environment:
+#       - spring.datasource.url=jdbc:postgresql://store-db-store:5432/store
+#       - spring.datasource.username=store
+#       - spring.datasource.password=store
+#       - eureka.client.service-url.defaultZone=http://store-discovery:8761/eureka/
+#     deploy:
+#       mode: replicated
+#       replicas: 1
+#     networks:
+#       - private-network
+#     depends_on:
+#       - db-store
+#       - discovery
+#       - account
+  
+#   recomencadacao:
+#     build:
+#       context: ../recomendacao-resource/
+#       dockerfile: Dockerfile
+#     image: store-recomendacao:latest
+#     environment:
+#       - spring.datasource.url=jdbc:postgresql://store-db-store:5432/store
+#       - spring.datasource.username=store
+#       - spring.datasource.password=store
+#       - eureka.client.service-url.defaultZone=http://store-discovery:8761/eureka/
+#     deploy:
+#       mode: replicated
+#       replicas: 1
+#     networks:
+#       - private-network
+#     depends_on:
+#       - db-store
+#       - discovery
+#       - account
+#       - aluno
+#       - instituicao
+
+#   auth:
+#     build:
+#       context: ../auth-resource/
+#       dockerfile: Dockerfile
+#     image: store-auth:latest
+#     environment:
+#       - eureka.client.service-url.defaultZone=http://store-discovery:8761/eureka/
+#     deploy:
+#       mode: replicated
+#       replicas: 1
+#     networks:
+#       - private-network
+#     depends_on:
+#       - discovery
+#       - account
+  
+
+# networks:
+#   private-network:
+#     driver: bridge
+
+networks:
+  private-network:
+    driver: bridge
