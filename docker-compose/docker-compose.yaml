@@ -1,20 +1,20 @@
 version: '3.8'
 name: store
-services:
-  db-store:
-    container_name: store-db-store
-    image: postgres:latest
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_USER=store
-      - POSTGRES_PASSWORD=store
-      - POSTGRES_DB=store
-    volumes:
-      - $VOLUME/postgres/store/data:/var/lib/postgresql/data
-    restart: always
-    networks:
-      - private-network
+# services:
+#   db-store:
+#     container_name: store-db-store
+#     image: postgres:latest
+#     ports:
+#       - 5432:5432
+#     environment:
+#       - POSTGRES_USER=store
+#       - POSTGRES_PASSWORD=store
+#       - POSTGRES_DB=store
+#     volumes:
+#       - $VOLUME/postgres/store/data:/var/lib/postgresql/data
+#     restart: always
+#     networks:
+#       - private-network
 
   # prometheus:
   #   image: prom/prometheus:latest
@@ -103,9 +103,9 @@ services:
       dockerfile: Dockerfile
     image: store-aluno:latest
     environment:
-      - spring.datasource.url=jdbc:postgresql://db-store:5432/store
-      - spring.datasource.username=store
-      - spring.datasource.password=store
+      - spring.datasource.url=jdbc:postgresql://horizontes.c5w4osi0sl7q.us-east-2.rds.amazonaws.com:5432/store
+      - spring.datasource.username=postgres
+      - spring.datasource.password=tRD5jASTYt4Wq7
     deploy:
       mode: replicated
       replicas: 1
@@ -113,9 +113,7 @@ services:
       - "8080:8080"
     networks:
       - private-network
-    depends_on:
-      - db-store
-
+  
 
 
       # - discovery

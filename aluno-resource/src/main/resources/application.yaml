@@ -2,9 +2,9 @@ spring:
   application:
     name: store-aluno
   datasource:
-    url: jdbc:postgresql://localhost:5432/store # URL de conexão com o banco de dados PostgreSQL
-    username: store # Nome de usuário do banco de dados
-    password: store # Senha do banco de dados
+    url: jdbc:postgresql://horizontes.c5w4osi0sl7q.us-east-2.rds.amazonaws.com:5432/aluno # URL de conexão com o banco de dados PostgreSQL
+    username: postgres # Nome de usuário do banco de dados
+    password:   # Senha do banco de dados
     driver-class-name: org.postgresql.Driver # Driver JDBC para PostgreSQL
   flyway:
     baseline-on-migrate: true
